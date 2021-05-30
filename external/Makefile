@@ -289,6 +289,7 @@ tor/Makefile: tor/configure.ac tor/Makefile.am
 				--disable-manpage \
 				--disable-html-manual \
 				--disable-system-torrc \
+				--disable-systemd \
 				--disable-unittests \
 				--prefix=$(EXTERNAL_ROOT)
 
