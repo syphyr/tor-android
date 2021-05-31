@@ -290,6 +290,7 @@ tor/Makefile: tor/configure.ac tor/Makefile.am
 				--disable-html-manual \
 				--disable-system-torrc \
 				--disable-systemd \
+				--disable-tool-name-check \
 				--disable-unittests \
 				--prefix=$(EXTERNAL_ROOT)
 
