@@ -303,6 +303,7 @@ tor/Makefile: tor/configure.ac tor/Makefile.am
 				--disable-module-dirauth \
 				--disable-asciidoc \
 				--disable-systemd \
+				--disable-tool-name-check \
 				--prefix=$(EXTERNAL_ROOT)
 	grep -E '^# *define +HAVE_LZMA +1$$' tor/orconfig.h
 	grep -E '^# *define +HAVE_ZSTD +1$$' tor/orconfig.h
