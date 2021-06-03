@@ -202,7 +202,7 @@ release()
     # tame the build log to fit into GitLab CI's 4MB limit
     export V=0
 
-    fetch_submodules clean
+    #fetch_submodules clean
     build_app release
     artifact="tor-android"
     # version must match getVersionName() in tor-android-binary/build.gradle
