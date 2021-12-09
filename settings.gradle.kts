@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        maven { url = uri("/home/delta/src/orbot_build_scripts/maven") }
         google()
         mavenCentral()
         gradlePluginPortal()
@@ -14,6 +15,7 @@ plugins {
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
+        maven { url = uri("/home/delta/src/orbot_build_scripts/maven") }
         google()
         mavenCentral()
         maven(uri("https://raw.githubusercontent.com/guardianproject/gpmaven/master"))
