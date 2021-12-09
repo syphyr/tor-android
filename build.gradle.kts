@@ -5,6 +5,7 @@ val versionName = "0.4.9.6"
 
 buildscript {
     repositories {
+        maven { url = uri("/media/delta/T5/android/orbot-latest/maven") }
         mavenCentral()
         google()
     }
@@ -20,6 +21,7 @@ plugins {
 
 allprojects {
     repositories {
+        maven { url = uri("/media/delta/T5/android/orbot-latest/maven") }
         mavenCentral()
         google()
     }

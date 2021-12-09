@@ -1,5 +1,6 @@
 pluginManagement {
     repositories {
+        maven { url = uri("/media/delta/T5/android/orbot-latest/maven") }
         google()
         mavenCentral()
         gradlePluginPortal()
