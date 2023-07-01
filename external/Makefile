@@ -291,6 +291,8 @@ tor/Makefile: tor/configure.ac tor/Makefile.am
 				--disable-system-torrc \
 				--disable-systemd \
 				--disable-tool-name-check \
+				--disable-seccomp \
+				--disable-libscrypt \
 				--disable-unittests \
 				--prefix=$(EXTERNAL_ROOT)
 
