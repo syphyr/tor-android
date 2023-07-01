@@ -291,6 +291,8 @@ tor/Makefile: tor/configure.ac tor/Makefile.am
 				--disable-system-torrc \
 				--disable-systemd \
 				--disable-tool-name-check \
+				--disable-seccomp \
+				--disable-libscrypt \
 				--prefix=$(EXTERNAL_ROOT)
 	grep -E '^# *define +HAVE_LZMA +1$$' tor/orconfig.h
 	grep -E '^# *define +HAVE_ZSTD +1$$' tor/orconfig.h
