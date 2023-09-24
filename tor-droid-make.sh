@@ -251,7 +251,7 @@ show_options()
 
 option=$1
 #default_abis="arm64-v8a armeabi-v7a x86 x86_64"
-default_abis="arm64-v8a"
+default_abis="arm64-v8a armeabi-v7a"
 abis=$default_abis
 build_type="debug"
 
