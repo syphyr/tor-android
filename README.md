@@ -30,7 +30,7 @@ Then add the `tor-android` and `jtorctl` dependencies to your project:
 ```gradle
 dependencies {
     implementation 'info.guardianproject:tor-android:0.4.8.16.2'
-    implementation 'info.guardianproject:jtorctl:0.4.5.7'
+    implementation 'info.guardianproject:jtorctl:0.4.8.17'
 }
 ```
 
