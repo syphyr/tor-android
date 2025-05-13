@@ -93,6 +93,7 @@ INSTALL_DIR := $(EXTERNAL_ROOT)/lib/$(APP_ABI)
 	zlib-clean \
 	openssl-clean \
 	libevent-clean \
+	lzma-clean \
 	zstd-clean \
 	tor tor-clean
 
@@ -177,6 +178,39 @@ libevent-clean:
 
 
 #------------------------------------------------------------------------------#
+# lzma
+
+xz/Makefile: xz/configure.ac xz/Makefile.am
+	cd xz && ./autogen.sh
+	cd xz && ./configure \
+			--host=$(HOST) \
+			--enable-static \
+			--disable-doc \
+			--disable-lzma-links \
+			--disable-lzmadec \
+			--disable-lzmainfo \
+			--disable-scripts \
+			--disable-shared \
+			--disable-xz \
+			--disable-xzdec \
+			--prefix=/
+
+lzma-build-stamp: xz/Makefile
+	$(MAKE) -C xz install DESTDIR=$(EXTERNAL_ROOT)
+	touch $@
+
+lzma-clean:
+	-$(MAKE) -C xz uninstall DESTDIR=$(EXTERNAL_ROOT)
+	-$(MAKE) -C xz clean
+	-rm -rf include/lzma
+	-rm -f include/lzma.h
+	-rm -f lib/liblzma.a
+	-rm -f lib/liblzma.la
+	-rm -f lzma-build-stamp
+	-cd xz && \
+		git clean -fdx > /dev/null
+
+#------------------------------------------------------------------------------#
 # zlib
 
 zlib-build-stamp:
@@ -242,12 +276,12 @@ tor/Makefile: tor/configure.ac tor/Makefile.am
 				--host=$(ALTHOST) \
 				--enable-android \
 				--enable-gpl \
+				--enable-lzma \
 				--enable-pic \
 				--enable-static-libevent --with-libevent-dir=$(EXTERNAL_ROOT) \
 				--enable-static-openssl --with-openssl-dir=$(EXTERNAL_ROOT) \
 				--enable-static-zlib --with-zlib-dir=$(EXTERNAL_ROOT) \
 				--enable-zstd \
-				--disable-lzma \
 				--disable-module-relay \
 				--disable-module-dirauth \
 				--disable-asciidoc \
@@ -256,6 +290,7 @@ tor/Makefile: tor/configure.ac tor/Makefile.am
 				--disable-html-manual \
 				--disable-system-torrc \
 				--prefix=$(EXTERNAL_ROOT)
+	grep -E '^# *define +HAVE_LZMA +1$$' tor/orconfig.h
 	grep -E '^# *define +HAVE_ZSTD +1$$' tor/orconfig.h
 	grep -E '^# *define +ENABLE_OPENSSL +1$$' tor/orconfig.h
 
@@ -263,7 +298,7 @@ tor-build-stamp: tor/Makefile
 	$(MAKE) -C tor
 	touch $@
 
-tor: zlib-build-stamp zstd-build-stamp libevent-build-stamp openssl-build-stamp tor-build-stamp
+tor: zlib-build-stamp lzma-build-stamp zstd-build-stamp libevent-build-stamp openssl-build-stamp tor-build-stamp
 
 tor-clean:
 	-rm -f $(OUTPUT_FILE)
@@ -287,6 +322,8 @@ ifneq ($(DEBUG), 1)
 	$(EXTERNAL_ROOT)/bin/termux-elf-cleaner --api-level $(NDK_PLATFORM_LEVEL) $(INSTALL_DIR)/libtor.so
 	ls -l  $(INSTALL_DIR)/libtor.so
 endif
+	@echo "check if all the libs got included:"
+	grep "tor_lzma_state_size_precalc" $(INSTALL_DIR)/libtor.so
 	grep "Java_org_torproject_jni_TorService" $(INSTALL_DIR)/libtor.so
 	install -d $(EXTERNAL_ROOT)/test/$(APP_ABI)
 	cp tor/src/test/test tor/src/test/test-memwipe tor/src/test/test-slow \
@@ -299,7 +336,7 @@ PREBUILD_SHARED_LIBRARY-clean:
 #------------------------------------------------------------------------------#
 # cleanup, cleanup, put the toys away
 
-clean: zlib-clean openssl-clean libevent-clean zstd-clean tor-clean
+clean: zlib-clean openssl-clean libevent-clean lzma-clean zstd-clean tor-clean
 
 
 #------------------------------------------------------------------------------#
