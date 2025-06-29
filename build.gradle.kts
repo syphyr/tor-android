@@ -41,9 +41,9 @@ nmcpAggregation {
         password = project.findProperty("sonatype.token") as String?
 
         // publish manually from the portal
-        //publishingType = "USER_MANAGED"
+        publishingType = "USER_MANAGED"
         // or if you want to publish automatically
-        publishingType = "AUTOMATIC"
+        //publishingType = "AUTOMATIC"
     }
 
     publishAllProjectsProbablyBreakingProjectIsolation()
