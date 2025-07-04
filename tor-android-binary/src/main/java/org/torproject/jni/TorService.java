@@ -229,6 +229,15 @@ public class TorService extends Service {
 
     private native int runMain();
 
+    public native static String libeventVersion();
+
+    public native static String opensslVersion();
+
+    public native static String zlibVersion();
+
+    public native static String zstdVersion();
+
+    public native static String lzmaVersion();
 
     public class LocalBinder extends Binder {
         public TorService getService() {
