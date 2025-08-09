@@ -69,7 +69,10 @@ NDK_UNAME := $(shell uname -s | tr '[A-Z]' '[a-z]')
 NDK_TOOLCHAIN_BASE=$(ANDROID_NDK_HOME)/toolchains/llvm/prebuilt/$(NDK_UNAME)-$(NDK_PROCESSOR)
 
 export CC := $(NDK_TOOLCHAIN_BASE)/bin/$(HOST)$(NDK_PLATFORM_LEVEL)-clang
-
+export AR := $(NDK_TOOLCHAIN_BASE)/bin/llvm-ar
+export LD := $(NDK_TOOLCHAIN_BASE)/bin/ld
+export RANLIB := $(NDK_TOOLCHAIN_BASE)/bin/llvm-ranlib
+export STRIP := $(NDK_TOOLCHAIN_BASE)/bin/llvm-strip
 
 export TZ := UTC
 export LC_ALL := C.UTF-8
@@ -319,7 +322,7 @@ PREBUILD_SHARED_LIBRARY: tor
 	cp openssl/configdata.pm tor/orconfig.h $(INSTALL_DIR)/
 ifneq ($(DEBUG), 1)
 	ls -l  $(INSTALL_DIR)/libtor.so
-	$(NDK_TOOLCHAIN_BASE)/bin/llvm-strip --strip-unneeded -R .note -R .comment --strip-debug \
+	$(STRIP) --strip-unneeded -R .note -R .comment --strip-debug \
 		$(INSTALL_DIR)/libtor.so
 	$(EXTERNAL_ROOT)/bin/termux-elf-cleaner --api-level $(NDK_PLATFORM_LEVEL) --preinit-array \
 		$(INSTALL_DIR)/libtor.so
