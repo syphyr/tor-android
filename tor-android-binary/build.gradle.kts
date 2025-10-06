@@ -67,7 +67,7 @@ android {
 dependencies {
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.so"))))
     api("androidx.localbroadcastmanager:localbroadcastmanager:1.1.0")
-    api("info.guardianproject:jtorctl:0.4.5.7")
+    api("info.guardianproject:jtorctl:0.4.8.19")
 
     androidTestImplementation("androidx.test:core:1.4.0")
     androidTestImplementation("androidx.test:runner:1.4.0")
