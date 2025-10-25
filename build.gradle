@@ -3,7 +3,7 @@
 buildscript {
     ext.agp_version = '8.13.2'
     repositories {
-        maven { url '/media/delta/T5/android/orbot-latest/maven' }
+        maven { url = '/media/delta/T5/android/orbot-latest/maven' }
         mavenCentral()
         google()
     }
@@ -18,7 +18,7 @@ plugins {
 
 allprojects {
     repositories {
-        maven { url '/media/delta/T5/android/orbot-latest/maven' }
+        maven { url = '/media/delta/T5/android/orbot-latest/maven' }
         mavenCentral()
         google()
     }
