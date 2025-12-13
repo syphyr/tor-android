@@ -30,7 +30,7 @@ Then add the `tor-android` and `jtorctl` dependencies to your project:
 ```groovy
 dependencies {
     implementation("info.guardianproject:tor-android:0.4.8.22")
-    implementation("info.guardianproject:jtorctl:0.4.5.7")
+    implementation 'info.guardianproject:jtorctl:0.4.9.4'
 }
 ```
 
