@@ -110,7 +110,6 @@ sudo apt install autoconf \
     po4a \
     libzstd-dev
 sudo apt install linux-headers-$(uname -r)
-
 ```
 
 *(NOTE: see instructions for [building Tor on Debian](https://gitlab.com/torproject/tor/-/blob/main/.gitlab-ci.yml?ref_type=heads) for a starting point on the latest Debian dependencies used to build `tor`...)*

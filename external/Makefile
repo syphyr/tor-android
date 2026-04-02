@@ -255,7 +255,11 @@ tor/Makefile: tor/configure.ac tor/Makefile.am
 				--disable-manpage \
 				--disable-html-manual \
 				--disable-system-torrc \
+				--disable-unittests \
 				--prefix=$(EXTERNAL_ROOT)
+
+	# remove this when someone does *anything* with the unit tests again...
+
 	grep -E '^# *define +HAVE_ZSTD +1$$' tor/orconfig.h
 	grep -E '^# *define +ENABLE_OPENSSL +1$$' tor/orconfig.h
 
@@ -288,9 +292,11 @@ ifneq ($(DEBUG), 1)
 	ls -l  $(INSTALL_DIR)/libtor.so
 endif
 	grep "Java_org_torproject_jni_TorService" $(INSTALL_DIR)/libtor.so
-	install -d $(EXTERNAL_ROOT)/test/$(APP_ABI)
-	cp tor/src/test/test tor/src/test/test-memwipe tor/src/test/test-slow \
-		$(EXTERNAL_ROOT)/test/$(APP_ABI)
+
+	# this requires unit tests to run, uncomment when CI or anything uses these tests like they did before
+	# 	install -d $(EXTERNAL_ROOT)/test/$(APP_ABI)
+	# 	cp tor/src/test/test tor/src/test/test-memwipe tor/src/test/test-slow \
+	#	$(EXTERNAL_ROOT)/test/$(APP_ABI)
 
 PREBUILD_SHARED_LIBRARY-clean:
 	-rm $(INSTALL_DIR)/libtor.so
