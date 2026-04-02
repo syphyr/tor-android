@@ -6,13 +6,13 @@ daemon.
 
 Currently, Tor Android is built with the following versions of `tor`, `libevent`, `openssl`, `zlib` and `zstd`:
 
-| Component |                                                                           Version |
-|:----------|----------------------------------------------------------------------------------:|
-| tor       |        [0.4.9.5](https://forum.torproject.org/c/news/tor-release-announcement/28) |
-| libevent  | [2.1.12](https://github.com/libevent/libevent/releases/tag/release-2.1.12-stable) |
-| OpenSSL   |            [3.5.5](https://github.com/openssl/openssl/releases/tag/openssl-3.5.5) |
-| zlib      |                       [1.3.2](https://github.com/madler/zlib/releases/tag/v1.3.2) |
-| zstd      |                     [1.5.7](https://github.com/facebook/zstd/releases/tag/v1.5.7) |
+| Component |                                                                              Version |
+|:----------|-------------------------------------------------------------------------------------:|
+| tor       |[0.4.9.6](https://forum.torproject.org/t/security-release-0-4-8-23-and-0-4-9-6/21386) |
+| libevent  |    [2.1.12](https://github.com/libevent/libevent/releases/tag/release-2.1.12-stable) |
+| OpenSSL   |               [3.5.5](https://github.com/openssl/openssl/releases/tag/openssl-3.5.5) |
+| zlib      |                          [1.3.2](https://github.com/madler/zlib/releases/tag/v1.3.2) |
+| zstd      |                        [1.5.7](https://github.com/facebook/zstd/releases/tag/v1.5.7) |
 
 Tor Android binaries are available on the [Guardian Project Maven Repo](https://github.com/guardianproject/gpmaven)
 
@@ -40,7 +40,7 @@ allprojects {
 Then add the `tor-android` and `jtorctl` dependencies to your project:
 ```kts
 dependencies {
-    implementation("info.guardianproject:tor-android:0.4.9.5")
+    implementation("info.guardianproject:tor-android:0.4.9.6")
     implementation("info.guardianproject:jtorctl:0.4.5.7")
 }
 ```
@@ -160,7 +160,7 @@ This will produce an unsigned tor-android AAR.
 
 #### Top-level `build.gradle.kts`
 
-Update these fields at the top of `build.gradle.kts`. For `tor` 0.4.9.5 the first digits of `versionCode` and the `versionName` string are the version of `tor` used.
+Update these fields at the top of `build.gradle.kts`. For example, for a relase of `tor` 0.4.9.5 the first digits of `versionCode` and the `versionName` string are the version of `tor` used.
 
 Note that `VERSION_CODE` ends in a 0.
 

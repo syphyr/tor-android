@@ -2,8 +2,8 @@
 
 @file:Suppress("PropertyName")
 
-val VERSION_CODE = 49050
-val VERSION_NAME = "0.4.9.5"
+val VERSION_CODE = 49060
+val VERSION_NAME = "0.4.9.6"
 
 buildscript {
     repositories {
