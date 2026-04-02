@@ -95,19 +95,30 @@ sudo apt install autoconf \
     autopoint \
     autotools-dev \
     gettext-base \
+    gettext \
     git \
     libtool \
     make \
     patch \
     pkg-config \
-    g++
+    g++ \
+    uidmap \
+    libseccomp-dev \
+    libscrypt-dev \
+    build-essential \
+    ca-certificates \
+    po4a \
+    libzstd-dev
 ```
 
-You'll need a valid JDK setup on your system. An extremely easy way to do this is to [install SDKMAN](https://sdkman.io/). With SDKMAN installed, you can configure Java 25 like so:
+*(NOTE: see instructions for [building Tor on Debian](https://gitlab.com/torproject/tor/-/blob/main/.gitlab-ci.yml?ref_type=heads) for a starting point on the latest Debian dependencies used to build `tor`...)*
+
+You'll need a valid JDK setup on your system. An extremely easy way to obtain a correclty configured one is to [install SDKMAN](https://sdkman.io/). With SDKMAN installed, you can obtain and use Java 25 like so:
 
 ```bash
 sdk init 
 sdk install java 25.0.2-tem
+sdk use java 25.0.2-tem
 ``` 
 
 Then obtain the Android SDK and NDK. The Android SDK is installed by default with Android Studio, and the NDK can be downloaded from within Android Studio's SDK manager.
@@ -119,7 +130,6 @@ Then set these environment variables for the SDK and NDK:
 ```bash
 export ANDROID_HOME=~/Android/Sdk
 export ANDROID_NDK_HOME=~/Android/Sdk/ndk/28.2.13676358
-
 ```
 
 Be sure that you have all of the git submodules up-to-date:
@@ -142,6 +152,8 @@ To build, run:
 
 This will produce an unsigned tor-android AAR.
 
+
+*(NOTE: that `./tor-droidmake build ...` does not currently work in the `fish` shell, use `zsh` or `bash`...)*
 
 
 ## Preparing for a release 
