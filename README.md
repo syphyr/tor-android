@@ -109,9 +109,15 @@ sudo apt install autoconf \
     ca-certificates \
     po4a \
     libzstd-dev
+sudo apt install linux-headers-$(uname -r)
+
 ```
 
 *(NOTE: see instructions for [building Tor on Debian](https://gitlab.com/torproject/tor/-/blob/main/.gitlab-ci.yml?ref_type=heads) for a starting point on the latest Debian dependencies used to build `tor`...)*
+
+```bash
+
+```
 
 You'll need a valid JDK setup on your system. An extremely easy way to obtain a correclty configured one is to [install SDKMAN](https://sdkman.io/). With SDKMAN installed, you can obtain and use Java 25 like so:
 
