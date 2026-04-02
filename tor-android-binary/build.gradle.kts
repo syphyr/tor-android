@@ -16,9 +16,13 @@ kotlin { jvmToolchain(21) }
 
 group = "info.guardianproject"
 
-val getVersionName: ExecOutput? = providers.exec {
-    commandLine("git", "describe", "--tags", "--always")
+fun getVersionName(): Provider<String> {
+    // Gets the version name from the latest Git tag
+    return providers.exec {
+        commandLine("git", "describe", "--tags", "--always")
+    }.standardOutput.asText.map { it.trim() }
 }
+
 
 android {
     namespace = "org.torproject.jni"
@@ -81,7 +85,7 @@ dependencies {
 }
 
 tasks.register<Jar>("sourcesJar") {
-    archiveBaseName.set("tor-android-" + getVersionName!!.standardOutput.asText.get().trim())
+    archiveBaseName.set("tor-android-" + getVersionName())
     archiveClassifier.set("sources")
     from(android.sourceSets.getByName("main").java.srcDirs)
 }
@@ -92,7 +96,7 @@ tasks.dokkaGeneratePublicationJavadoc.configure {
 
 tasks.register<Jar>("javadocJar") {
     dependsOn(tasks.dokkaGeneratePublicationJavadoc)
-    archiveBaseName.set("tor-android-" + getVersionName!!.standardOutput.asText.get().trim())
+    archiveBaseName.set("tor-android-" + getVersionName())
     archiveClassifier.set("javadoc")
     from(tasks.dokkaGeneratePublicationJavadoc.flatMap { it.outputDirectory })
 }

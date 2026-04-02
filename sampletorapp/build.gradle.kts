@@ -57,7 +57,7 @@ repositories {
 dependencies {
     // tor-android and jtorctl need to be added to apps using tor-android
     //noinspection UseTomlInstead
-    implementation("info.guardianproject:tor-android:0.4.9.5")
+    implementation("info.guardianproject:tor-android:0.4.9.5.1")
     //noinspection UseTomlInstead
     implementation("info.guardianproject:jtorctl:0.4.5.7")
 
