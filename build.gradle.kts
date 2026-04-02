@@ -1,9 +1,7 @@
 // Top-level build file where you can add configuration options common to all subprojects
 
-@file:Suppress("PropertyName")
-
-val VERSION_CODE = 49060
-val VERSION_NAME = "0.4.9.6"
+val versionCode = 49060
+val versionName = "0.4.9.6"
 
 buildscript {
     repositories {
@@ -16,8 +14,8 @@ buildscript {
 }
 plugins {
     alias(libs.plugins.nmcp.aggregation)
-    alias(libs.plugins.kotlin.android) apply false
     alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
 }
 
 allprojects {
@@ -28,8 +26,8 @@ allprojects {
 }
 
 extra.apply {
-    set("versionCode", VERSION_CODE)
-    set("versionName", VERSION_NAME)
+    set("versionCode", versionCode)
+    set("versionName", versionName)
 }
 
 nmcpAggregation {

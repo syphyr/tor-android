@@ -137,7 +137,7 @@ export ANDROID_HOME=~/Android/Sdk
 export ANDROID_NDK_HOME=~/Android/Sdk/ndk/28.2.13676358
 ```
 
-Be sure that you have all of the git submodules up-to-date:
+Be sure that you have every git submodule up-to-date:
 ```bash
 ./tor-droid-make.sh fetch -c
 ```
@@ -165,21 +165,21 @@ This will produce an unsigned tor-android AAR.
 
 #### Top-level `build.gradle.kts`
 
-Update these fields at the top of `build.gradle.kts`. For example, for a relase of `tor` 0.4.9.5 the first digits of `versionCode` and the `versionName` string are the version of `tor` used.
+Update these fields at the top of `build.gradle.kts`. For example, for a release of `tor` 0.4.9.5 the first digits of `versionCode` and the `versionName` string are the version of `tor` used.
 
-Note that `VERSION_CODE` ends in a 0.
+Note that `versionCode` ends in a 0.
 
 ```kts
-    VERSION_CODE = 49050
-    VERSION_NAME = "0.4.9.5"
+    versionCode = 49050
+    versionName = "0.4.9.5"
 ```
 
 If you are making new releases of `tor-android` that don't include a new update of tor, change the last digit 
-of `VERSION_CODE` and add a field onto `VERSION_NAME`, ie:
+of `versionCode` and add a field onto `versionName`, ie:
 
 ```kts
-    VERSION_CODE = 49051
-    VERSION_NAME = "0.4.9.5.1"
+    versionCode = 49051
+    versionName = "0.4.9.5.1"
 ```
 
 #### `README.md`

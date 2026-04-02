@@ -1,15 +1,11 @@
-@file:Suppress("PropertyName")
-
-val LIBRARY_GROUP = "info.guardianproject"
-val LIBRARY_ARTIFACT_ID = "tor-android"
-val LIBRARY_URL = "https://github.com/guardianproject/tor-android"
+import com.android.build.api.dsl.LibraryExtension
 
 plugins {
-    id("com.android.library")
+    alias { libs.plugins.android.library }
     alias(libs.plugins.dokka)
     alias(libs.plugins.dokka.javadoc)
+    signing
     id("maven-publish")
-    id("signing")
 }
 
 kotlin { jvmToolchain(21) }
@@ -23,18 +19,15 @@ fun getVersionName(): Provider<String> {
     }.standardOutput.asText.map { it.trim() }
 }
 
-
-android {
+configure<LibraryExtension> {
     namespace = "org.torproject.jni"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
         }
     }
-
     defaultConfig {
         minSdk = 24
-        testOptions.targetSdk = 36
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         testInstrumentationRunnerArguments["disableAnalytics"] = "true"
 
@@ -70,6 +63,7 @@ android {
             excludes += "META-INF/androidx.localbroadcastmanager_localbroadcastmanager.version"
         }
     }
+
     buildFeatures {
         buildConfig = true
     }
@@ -108,16 +102,19 @@ tasks.register<Jar>("javadocJar") {
 afterEvaluate {
     publishing {
         publications {
+            val libraryGroup = "info.guardianproject"
+            val libraryArtifactId = "tor-android"
+            val libraryUrl = "https://github.com/guardianproject/tor-android"
             create<MavenPublication>("release") {
                 from(components["release"])
-                groupId = LIBRARY_GROUP
-                artifactId = LIBRARY_ARTIFACT_ID
+                groupId = libraryGroup
+                artifactId = libraryArtifactId
                 version = rootProject.extra["versionName"].toString()
 
                 pom {
                     name.set("TorAndroid")
                     description.set("Tor for Android")
-                    url.set(LIBRARY_URL)
+                    url.set(libraryUrl)
                     licenses {
                         license {
                             name.set("The 3-Clause BSD License")
@@ -134,7 +131,7 @@ afterEvaluate {
                     scm {
                         connection.set("scm:git:git://github.com/guardianproject/tor-android.git")
                         developerConnection.set("scm:git:ssh://git@github.com:guardianproject/tor-android.git")
-                        url.set(LIBRARY_URL)
+                        url.set(libraryUrl)
                     }
                 }
             }

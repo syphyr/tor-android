@@ -1,64 +1,41 @@
+import com.android.build.api.dsl.ApplicationExtension
+
 plugins {
     alias(libs.plugins.android.application)
 }
 
-android {
+configure<ApplicationExtension> {
     namespace = "org.torproject.android.sample"
-    compileSdk = 36
+    compileSdk {
+        version = release(36) {
+            minorApiLevel = 1
+        }
+    }
+    defaultConfig {
+        applicationId = namespace
+        minSdk = 24
+        targetSdk = 36
+    }
     buildFeatures {
         buildConfig = true
     }
-    defaultConfig {
-        applicationId = "org.torproject.android.sample"
-        minSdk = 24
-        targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
-
-        buildConfigField("int", "VERSION_CODE", "${rootProject.extra["versionCode"]}")
-        buildConfigField("String", "VERSION_NAME", "\"${rootProject.extra["versionName"]}\"")
-    }
-    packaging {
-        resources {
-            excludes += listOf(
-                "META-INF/com.android.tools/proguard/coroutines.pro",
-                "META-INF/com.android.tools/proguard/coroutines.pro"
-            )
-        }
-    }
-
-
-    buildTypes {
-        debug {
-        }
-
-        release {
-            isMinifyEnabled = false
-        }
-    }
-
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-    lint {
-        abortOnError = false
-    }
-
 }
 
 repositories {
     // this repository is needed for tor-android and jtorctl
-    // normally this is put in the top-level build.gradle.kts, but showing it here to
-    // keep as many things in one place as possible
+    // normally this goes in the top-level build.gradle.kts, but keeping it here for simplicity
     maven(uri("https://raw.githubusercontent.com/guardianproject/gpmaven/master"))
 }
 
+//noinspection UseTomlInstead
 dependencies {
-    // tor-android and jtorctl need to be added to apps using tor-android
-    //noinspection UseTomlInstead
+
+    // apps built with tor-android need to include as dependencies both tor-android + jtorctl:
     implementation("info.guardianproject:tor-android:0.4.9.5.1")
-    //noinspection UseTomlInstead
     implementation("info.guardianproject:jtorctl:0.4.5.7")
 
     // other android dependencies:

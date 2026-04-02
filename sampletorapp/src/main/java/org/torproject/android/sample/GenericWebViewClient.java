@@ -30,6 +30,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings({"ConstantValue", "ClassEscapesDefinedScope"})
 public class GenericWebViewClient extends WebViewClient {
 
     private int requestCounter;

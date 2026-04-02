@@ -9,7 +9,6 @@ commons-io = "2.21.0"
 commons-net = "3.13.0"
 dokka = "2.2.0"
 jtorctl = "0.4.5.7"
-kotlin = "2.3.20"
 netcipher = "2.1.0"
 nmcp = "1.4.4"
 
@@ -28,7 +27,7 @@ netcipher = { module = "info.guardianproject.netcipher:netcipher", version.ref =
 [plugins]
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 dokka-javadoc = { id = "org.jetbrains.dokka-javadoc", version.ref = "dokka" }
-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 nmcp-aggregation = { id = "com.gradleup.nmcp.aggregation", version.ref = "nmcp" }
 android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
 

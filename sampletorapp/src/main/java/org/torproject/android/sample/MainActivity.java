@@ -34,6 +34,7 @@ import android.widget.Toast;
 
 import org.torproject.jni.TorService;
 
+@SuppressWarnings("BusyWait")
 public class MainActivity extends Activity {
 
     @SuppressLint({"UnspecifiedRegisterReceiverFlag", "SetTextI18n"})

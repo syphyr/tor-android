@@ -12,12 +12,16 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.util.JsonReader;
 import android.util.Log;
+
 import androidx.test.InstrumentationRegistry;
 import androidx.test.rule.ServiceTestRule;
 import androidx.test.runner.AndroidJUnit4;
+
 import info.guardianproject.netcipher.NetCipher;
+
 import net.freehaven.tor.control.ConfigEntry;
 import net.freehaven.tor.control.TorControlConnection;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.junit.After;
@@ -99,16 +103,13 @@ public class TorServiceTest {
                 }
                 String status = intent.getStringExtra(TorService.EXTRA_STATUS);
                 Log.i(TAG, "receiver.onReceive: " + status + " " + intent);
-                if (TorService.STATUS_STARTING.equals(status)) {
-                    startingLatch.countDown();
-                } else if (TorService.STATUS_ON.equals(status)) {
-                    startedLatch.countDown();
-                } else if (TorService.STATUS_STOPPING.equals(status)) {
-                    stoppingLatch.countDown();
-                } else if (TorService.STATUS_OFF.equals(status)) {
-                    stoppedLatch.countDown();
-                } else {
-                    throw new IllegalStateException("UNKNOWN STATUS FROM INTENT: " + intent);
+                switch (status) {
+                    case TorService.STATUS_STARTING -> startingLatch.countDown();
+                    case TorService.STATUS_ON -> startedLatch.countDown();
+                    case TorService.STATUS_STOPPING -> stoppingLatch.countDown();
+                    case TorService.STATUS_OFF -> stoppedLatch.countDown();
+                    case null, default ->
+                            throw new IllegalStateException("UNKNOWN STATUS FROM INTENT: " + intent);
                 }
             }
         };
@@ -137,8 +138,8 @@ public class TorServiceTest {
             assertFalse("Something else is providing port 8118!", isServerSocketInUse(8118));
         }
 
-        assertTrue(canConnectToSocket("localhost", socksPort));
-        assertTrue(canConnectToSocket("localhost", httpTunnelPort));
+        assertTrue(canConnectToSocket(socksPort));
+        assertTrue(canConnectToSocket(httpTunnelPort));
 
         assertNotEquals(InetAddress.getByName(null), InetAddress.getByName("check.torproject.org"));
         assertFalse("URLConnection should not use Tor by default", NetCipher.isURLConnectionUsingTor());
@@ -255,16 +256,16 @@ public class TorServiceTest {
         connection.setConnectTimeout(0); // blocking connect with TCP timeout
         connection.setReadTimeout(0);
         assertEquals(200, connection.getResponseCode());
-        IOUtils.copy(connection.getInputStream(), new FileWriter(new File("/dev/null")));
+        IOUtils.copy(connection.getInputStream(), new FileWriter("/dev/null"));
 
         serviceRule.unbindService();
         stoppedLatch.await();
     }
 
-    private static boolean canConnectToSocket(String host, int port) {
+    private static boolean canConnectToSocket(int port) {
         try {
             Socket socket = new Socket();
-            socket.connect(new InetSocketAddress(host, port), 120);
+            socket.connect(new InetSocketAddress("localhost", port), 120);
             socket.close();
             return true;
         } catch (IOException e) {

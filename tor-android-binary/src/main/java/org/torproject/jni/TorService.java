@@ -19,8 +19,6 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -113,7 +111,8 @@ public class TorService extends Service {
     public static final String STATUS_ON = "ON";
     public static final String STATUS_STARTING = "STARTING";
     public static final String STATUS_STOPPING = "STOPPING";
-    public static final String STATUS_BOOTSTRAPPED_100 = "Bootstrapped 100%";
+
+    private static final String STATUS_BOOTSTRAPPED_100 = "Bootstrapped 100%";
 
     /**
      * @return a {@link File} pointing to the location of the optional
@@ -180,8 +179,9 @@ public class TorService extends Service {
     /**
      * Tor stores private, internal data in this directory.
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private static File getAppTorServiceDataDir(Context context) {
-        File dir = new File(getAppTorServiceDir(context), "data");
+        var dir = new File(getAppTorServiceDir(context), "data");
         dir.mkdir();
         if (!(dir.setReadable(true, true) && dir.setWritable(true, true) && dir.setExecutable(true, true))) {
             throw new IllegalStateException("Cannot create " + dir);
@@ -218,12 +218,14 @@ public class TorService extends Service {
      */
     private static final ReentrantLock runLock = new ReentrantLock();
 
+    @SuppressWarnings("UnusedReturnValue")
     private native boolean createTorConfiguration();
 
     private native void mainConfigurationFree();
 
     private native static FileDescriptor prepareFileDescriptor(String path);
 
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private native boolean mainConfigurationSetCommandLine(String[] args);
 
     private native boolean mainConfigurationSetupControlSocket();
@@ -241,7 +243,6 @@ public class TorService extends Service {
 
     @Override
     public IBinder onBind(Intent intent) {
-        // TODO send broadcastStatus() here?
         return binder;
     }
 
@@ -267,7 +268,7 @@ public class TorService extends Service {
                 && data != null && !data.isEmpty()) {
             if (data.contains(STATUS_BOOTSTRAPPED_100)) {
                 TorService.broadcastStatus(TorService.this, TorService.STATUS_ON);
-                }
+            }
         }
     };
 
@@ -280,12 +281,13 @@ public class TorService extends Service {
      */
     private final Thread controlPortThread = new Thread(CONTROL_SOCKET_NAME) {
         @Override
+        @SuppressWarnings("ResultOfMethodCallIgnored")
         public void run() {
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
             try {
-                final CountDownLatch countDownLatch = new CountDownLatch(1);
-                final String observeDir = getAppTorServiceDataDir(TorService.this).getAbsolutePath();
-                FileObserver controlPortFileObserver = new FileObserver(observeDir) {
+                final var countDownLatch = new CountDownLatch(1);
+                final var observeDir = getAppTorServiceDataDir(TorService.this).getAbsolutePath();
+                var controlPortFileObserver = new FileObserver(observeDir) {
                     @Override
                     public void onEvent(int event, @Nullable String name) {
                         if ((event & FileObserver.CREATE) > 0 && CONTROL_SOCKET_NAME.equals(name)) {
@@ -297,14 +299,14 @@ public class TorService extends Service {
                 controlPortThreadStarted.countDown();
                 countDownLatch.await(10, TimeUnit.SECONDS);
                 controlPortFileObserver.stopWatching();
-                File controlSocket = new File(observeDir, CONTROL_SOCKET_NAME);
+                var controlSocket = new File(observeDir, CONTROL_SOCKET_NAME);
                 if (!controlSocket.canRead()) {
                     throw new IOException("cannot read " + controlSocket);
                 }
 
-                FileDescriptor controlSocketFd = prepareFileDescriptor(getControlSocket(TorService.this).getAbsolutePath());
-                InputStream is = new FileInputStream(controlSocketFd);
-                OutputStream os = new FileOutputStream(controlSocketFd);
+                var controlSocketFd = prepareFileDescriptor(getControlSocket(TorService.this).getAbsolutePath());
+                var is = new FileInputStream(controlSocketFd);
+                var os = new FileOutputStream(controlSocketFd);
                 torControlConnection = new TorControlConnection(is, os);
                 torControlConnection.launchThread(true);
                 torControlConnection.authenticate(new byte[0]);
@@ -315,7 +317,7 @@ public class TorService extends Service {
                 httpTunnelPort = getPortFromGetInfo("net/listeners/httptunnel");
 
             } catch (IOException | ArrayIndexOutOfBoundsException | InterruptedException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.toString());
                 broadcastError(TorService.this, e);
                 broadcastStatus(TorService.this, STATUS_STOPPING);
                 stopSelf();
@@ -328,12 +330,12 @@ public class TorService extends Service {
     private final Thread torThread = new Thread("tor") {
         @Override
         public void run() {
-            final Context context = getApplicationContext();
+            final var context = getApplicationContext();
             try {
                 createTorConfiguration();
                 setDefaultProxyPorts();
 
-                ArrayList<String> lines = new ArrayList<>(Arrays.asList("tor", "--verify-config", // must always be here
+                var lines = new ArrayList<>(Arrays.asList("tor", "--verify-config", // must always be here
                         "--RunAsDaemon", "0",
                         "-f", getTorrc(context).getAbsolutePath(),
                         "--defaults-torrc", getDefaultsTorrc(context).getAbsolutePath(),
@@ -347,11 +349,11 @@ public class TorService extends Service {
                         "--LogMessageDomains", "1",
                         "--TruncateLogFile", "1"
                 ));
-                String[] verifyLines = lines.toArray(new String[0]);
+                var verifyLines = lines.toArray(new String[0]);
                 if (!mainConfigurationSetCommandLine(verifyLines)) {
                     throw new IllegalArgumentException("Setting command line failed: " + Arrays.toString(verifyLines));
                 }
-                int result = runMain(); // run verify
+                var result = runMain(); // run verify
                 if (result != 0) {
                     throw new IllegalArgumentException("Bad command flags: " + Arrays.toString(verifyLines));
                 }
@@ -360,9 +362,9 @@ public class TorService extends Service {
                 controlPortThread.start();
                 controlPortThreadStarted.await();
 
-                String[] runLines = new String[lines.size() - 1];
+                var runLines = new String[lines.size() - 1];
                 runLines[0] = "tor";
-                for (int i = 2; i < lines.size(); i++) {
+                for (var i = 2; i < lines.size(); i++) {
                     runLines[i - 1] = lines.get(i);
                 }
                 if (!mainConfigurationSetCommandLine(runLines)) {
@@ -376,7 +378,7 @@ public class TorService extends Service {
                 }
 
             } catch (IllegalStateException | IllegalArgumentException | InterruptedException e) {
-                e.printStackTrace();
+                Log.e(TAG, e.toString());
                 broadcastError(context, e);
             } finally {
                 broadcastStatus(context, STATUS_STOPPING);
@@ -387,30 +389,30 @@ public class TorService extends Service {
     };
 
     private void setDefaultProxyPorts() {
-        String socksPort = "auto";
+        var socksPort = "auto";
         if (isPortAvailable(9050)) {
             socksPort = Integer.toString(9050);
         }
-        String httpTunnelPort = "auto";
+        var httpTunnelPort = "auto";
         if (isPortAvailable(8118)) {
             httpTunnelPort = Integer.toString(8118);
         }
 
-        String defaults = "SOCKSPort " + socksPort;
+        var defaults = "SOCKSPort " + socksPort;
         defaults += "\nHTTPTunnelPort " + httpTunnelPort + "\n";
 
         try {
-            PrintWriter pw = new PrintWriter(new FileWriter(getDefaultsTorrc(this), false));
+            var pw = new PrintWriter(new FileWriter(getDefaultsTorrc(this), false));
             pw.append(defaults);
             pw.flush();
             pw.close();
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.toString());
         }
     }
 
     private int getPortFromGetInfo(String key) {
-        final String value = getInfo(key);
+        var value = getInfo(key);
         if (value.trim().isEmpty()) return 0; // port is disabled
         return Integer.parseInt(value.substring(value.lastIndexOf(':') + 1, value.length() - 1));
     }
@@ -470,7 +472,7 @@ public class TorService extends Service {
         try {
             return torControlConnection.getInfo(key);
         } catch (IOException | NullPointerException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.toString());
         }
         return null;
     }
@@ -487,7 +489,7 @@ public class TorService extends Service {
                 torControlConnection.shutdownTor(TorControlCommands.SIGNAL_SHUTDOWN);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(TAG, e.toString());
         }
     }
 
@@ -505,8 +507,7 @@ public class TorService extends Service {
      * Broadcasts the current status to any apps following the status of TorService.
      */
     static void sendBroadcastStatusIntent(Context context) {
-        Intent intent = getBroadcastIntent(context, currentStatus);
-        context.sendBroadcast(intent);
+        context.sendBroadcast(getBroadcastIntent(context, currentStatus));
     }
 
     /**
@@ -515,7 +516,7 @@ public class TorService extends Service {
      */
     static void broadcastStatus(Context context, String currentStatus) {
         TorService.currentStatus = currentStatus;
-        Intent intent = getBroadcastIntent(context, currentStatus);
+        var intent = getBroadcastIntent(context, currentStatus);
         LocalBroadcastManager.getInstance(context).sendBroadcast(intent);
         context.sendBroadcast(intent);
     }
@@ -525,7 +526,7 @@ public class TorService extends Service {
      * but there is no way to write tests for {@code ServiceConnection}.
      */
     static void broadcastError(Context context, Throwable e) {
-        Intent intent = new Intent(ACTION_ERROR);
+        var intent = new Intent(ACTION_ERROR);
         if (e != null) {
             intent.putExtra(Intent.EXTRA_TEXT, e.getLocalizedMessage());
         }
@@ -536,7 +537,7 @@ public class TorService extends Service {
     }
 
     private static Intent getBroadcastIntent(Context context, String currentStatus) {
-        Intent intent = new Intent(TorService.ACTION_STATUS);
+        var intent = new Intent(TorService.ACTION_STATUS);
         intent.putExtra(EXTRA_SERVICE_PACKAGE_NAME, context.getPackageName());
         intent.setPackage(getBroadcastPackageName(context));
         intent.putExtra(EXTRA_STATUS, currentStatus);
