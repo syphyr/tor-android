@@ -332,7 +332,7 @@ ifneq ($(DEBUG), 1)
 		$(INSTALL_DIR)/libtor.so
 	ls -l  $(INSTALL_DIR)/libtor.so
 endif
-	echo "Checking for TorService java bindings in libtor.so:"
+	@echo "Checking for TorService java bindings in libtor.so:"
 	grep "Java_org_torproject_jni_TorService" $(INSTALL_DIR)/libtor.so
 	@echo "Checking for lzma library in libtor.so:"
 	grep "tor_lzma_state_size_precalc" $(INSTALL_DIR)/libtor.so
