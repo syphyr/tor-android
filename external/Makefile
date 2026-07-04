@@ -158,7 +158,10 @@ openssl-clean:
 	-make -C openssl uninstall_dev > /dev/null
 	-make -C openssl clean
 	-cd openssl && \
-		git clean -fdx > /dev/null
+		git clean -fdx && \
+		git reset --hard && \
+		git submodule foreach --recursive git clean -fdx && \
+		git submodule foreach --recursive git reset --hard
 
 
 #------------------------------------------------------------------------------#
@@ -186,7 +189,8 @@ libevent-clean:
 	-$(MAKE) -C libevent uninstall DESTDIR=$(EXTERNAL_ROOT)
 	-$(MAKE) -C libevent clean
 	-cd libevent && \
-		git clean -fdx > /dev/null
+		git clean -fdx && \
+		git reset --hard
 
 
 #------------------------------------------------------------------------------#
@@ -220,7 +224,8 @@ lzma-clean:
 	-rm -f lib/liblzma.la
 	-rm -f lzma-build-stamp
 	-cd xz && \
-		git clean -fdx > /dev/null
+		git clean -fdx && \
+		git reset --hard
 
 #------------------------------------------------------------------------------#
 # zlib
@@ -242,7 +247,8 @@ zlib-clean:
 	-rm -f zlib-build-stamp
 	-rm -f share/man/man3/zlib.3
 	-cd zlib && \
-		git clean -fdx > /dev/null
+		git clean -fdx && \
+		git reset --hard
 
 
 #------------------------------------------------------------------------------#
@@ -274,7 +280,8 @@ zstd-clean:
 	-$(MAKE) -C zstd uninstall
 	-$(MAKE) -C zstd clean
 	-cd zstd && \
-		git clean -fdx > /dev/null
+		git clean -fdx && \
+		git reset --hard
 
 
 #------------------------------------------------------------------------------#
@@ -321,7 +328,8 @@ tor-clean:
 	-rm -f $(OUTPUT_FILE)
 	-rm -f tor-build-stamp
 	-cd tor && \
-		git clean -fdx > /dev/null
+		git clean -fdx && \
+		git reset --hard
 
 
 #------------------------------------------------------------------------------#
